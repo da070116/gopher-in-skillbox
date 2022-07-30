@@ -188,10 +188,10 @@ func work3Task6() {
 
 func main() {
 	fmt.Println("Это задания 3 практической работы в курсе Skillbox.")
-	wrapper(work3Task1)
-	wrapper(work3Task2)
-	wrapper(work3Task3)
-	wrapper(work3Task4)
-	wrapper(work3Task5)
-	wrapper(work3Task6)
+	work3Task1()
+	work3Task2()
+	work3Task3()
+	work3Task4()
+	work3Task5()
+	work3Task6()
 }
