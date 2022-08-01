@@ -166,11 +166,11 @@ func work2Task7() {
 
 func main() {
 	fmt.Println("Это задания 2 практической работы в курсе Skillbox.")
-	wrapper(work2Task1)
-	wrapper(work2Task2)
-	wrapper(work2Task3)
-	wrapper(work2Task4)
-	wrapper(work2Task5)
-	wrapper(work2Task6)
-	wrapper(work2Task7)
+	work2Task1()
+	work2Task2()
+	work2Task3()
+	work2Task4()
+	work2Task5()
+	work2Task6()
+	work2Task7()
 }
