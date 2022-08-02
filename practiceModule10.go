@@ -48,32 +48,29 @@ func percentRoundingTroubles() {
 	var monthInterestRate uint8
 
 	fmt.Print("Сумма вклада: ")
-	fmt.Scan(&clientBaseSum)
+	_, _ = fmt.Scan(&clientBaseSum)
 	fmt.Print("Сколько (целых) лет хранить вклад: ")
-	fmt.Scan(&yearsToKeep)
+	_, _ = fmt.Scan(&yearsToKeep)
 	fmt.Print("Ежемесячная процентная ставка: ")
-	fmt.Scan(&monthInterestRate)
+	_, _ = fmt.Scan(&monthInterestRate)
+
+	augmentation := float64(monthInterestRate) / float64(100)
 
 	resultSum := clientBaseSum
-	auxiliarySum := float64(0)
 
 	bankInterest := float64(0)
 
 	for i := 0; i < int(yearsToKeep)*12; i++ {
-		capitalization := resultSum * (float64(monthInterestRate) / 100)
-		resultSum += capitalization
 
-		fmt.Println(capitalization * 100)
-		auxiliarySum = math.Trunc(auxiliarySum)
-		fmt.Println(auxiliarySum)
-		auxiliarySum = capitalization / 100
-		fmt.Println("aux", auxiliarySum)
-		bankInterest += capitalization - auxiliarySum
+		beforeTrunc := resultSum + resultSum*augmentation
+		truncatedSum := math.Trunc(beforeTrunc*100) / 100
+		bankInterest += beforeTrunc - truncatedSum
+		resultSum = truncatedSum
 	}
-	fmt.Println(resultSum, bankInterest)
+	fmt.Println("Итоговая сумма на счете:", resultSum, "Выгода банка за счёт округлений: ", bankInterest)
 }
 
 func main() {
-	//taylorSeriesForExponent()
+	taylorSeriesForExponent()
 	percentRoundingTroubles()
 }
