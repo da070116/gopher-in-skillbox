@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func work1Task1() {
+func module4Task1() {
 	fmt.Println("Задача 1: баллы ЕГЭ.")
 	var firstExamScore, secondExamScore, thirdExamScore, totalScore int
 	const enterThresholdScore int = 275
@@ -29,7 +29,7 @@ func work1Task1() {
 		fmt.Println("Вы не поступили")
 	}
 }
-func work1Task2() {
+func module4Task2() {
 	fmt.Println("Задача 2: Три числа")
 	var firstDigit, secondDigit, thirdDigit int
 	const compareToDigit int = 5
@@ -45,7 +45,7 @@ func work1Task2() {
 		fmt.Printf("Среди введённых чисел нет числа больше %v.\n", compareToDigit)
 	}
 }
-func work1Task3() {
+func module4Task3() {
 	fmt.Println("Задача 3: Банкомат")
 	const minValue int = 100
 	const maxValue int = 100000
@@ -65,7 +65,7 @@ func work1Task3() {
 		fmt.Print(stateOK, "\nВы сняли ", requiredValue, " рублей.\n")
 	}
 }
-func work1Task4() {
+func module4Task4() {
 	fmt.Println("Задача 4: Три числа: ещё попытка")
 	var _firstDigit, _secondDigit, _thirdDigit, counter int
 	fmt.Println("Введите первое число:")
@@ -85,7 +85,7 @@ func work1Task4() {
 	}
 	fmt.Println("Среди введённых чисел", counter, "больше или равны 5.")
 }
-func work1Task5() {
+func module4Task5() {
 	var dayOfWeek, visitorsGroupSize, billSum, sumToPay int
 	fmt.Println("Введите день недели:")
 	_, _ = fmt.Scan(&dayOfWeek)
@@ -114,7 +114,7 @@ func work1Task5() {
 	}
 }
 
-func work1Task6() {
+func module4Task6() {
 	fmt.Println("Задача 5: Студенты")
 	var studentsAmount, groupsAmount, studentNumber int
 	fmt.Println("Введите количество студентов:")
@@ -136,18 +136,12 @@ func work1Task6() {
 	}
 }
 
-func wrapper(f func()) {
-	fmt.Println("==========================================")
-	f()
-	fmt.Println("==========================================")
-}
-
-func main() {
+func runAllTasksModule4() {
 	fmt.Println("Это задания 1 практической работы в курсе Skillbox.")
-	wrapper(work1Task1)
-	wrapper(work1Task2)
-	wrapper(work1Task3)
-	wrapper(work1Task4)
-	wrapper(work1Task5)
-	wrapper(work1Task6)
+	wrapper(module4Task1)
+	wrapper(module4Task2)
+	wrapper(module4Task3)
+	wrapper(module4Task4)
+	wrapper(module4Task5)
+	wrapper(module4Task6)
 }
