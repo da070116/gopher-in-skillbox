@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"unicode"
@@ -14,9 +16,12 @@ func isCapitalized(word string) bool {
 func countWords() {
 	fmt.Println("Задание 1. Определение количества слов, начинающихся с большой буквы")
 	capitalizedWords := 0
-	var rawInput string
+
 	fmt.Println("Введите строку для подсчёта слов с большой буквы")
-	_, _ = fmt.Scan(&rawInput)
+	// Ввод произвольной строки
+	inputSource := bufio.NewReader(os.Stdin)
+	rawInput, _ := inputSource.ReadString('\n')
+
 	for len(rawInput) > 0 {
 		spaceIndex := strings.Index(rawInput, " ")
 		if spaceIndex == -1 {
@@ -37,9 +42,10 @@ func countWords() {
 }
 
 func digitsOutput() {
-	var rawInput = "a10 10 20b 20 30c30 30 dd"
+	inputSource := bufio.NewReader(os.Stdin)
+	rawInput, _ := inputSource.ReadString('\n')
+
 	digitsString := ""
-	fmt.Println(rawInput)
 
 	for len(rawInput) > 0 {
 		spaceIndex := strings.Index(rawInput, " ")
@@ -53,7 +59,12 @@ func digitsOutput() {
 		}
 		rawInput = rawInput[spaceIndex+1:]
 	}
-	fmt.Print("В строке содержатся числа в десятичном формате:\n", digitsString)
+	if len(digitsString) > 0 {
+		fmt.Print("В строке содержатся следующие числа в десятичном формате:\n", digitsString)
+	} else {
+		fmt.Println("В строке нет чисел в десятичном формате.")
+	}
+
 }
 
 func main() {
