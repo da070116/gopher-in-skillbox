@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func work2Task1() {
+func module5Task1() {
 	fmt.Println("Задание 1. Определение координатной плоскости точки")
 	var x, y int
 	var result string
@@ -32,7 +32,7 @@ func work2Task1() {
 		fmt.Printf("Искомая точка (%v, %v) принадлежит %v координатной четверти\n", x, y, result)
 	}
 }
-func work2Task2() {
+func module5Task2() {
 	fmt.Println("Задание 2. Проверить, что одно из чисел — положительное")
 
 	var d1, d2, d3 int
@@ -49,7 +49,7 @@ func work2Task2() {
 		fmt.Println("Ни одно из чисел не является положительным")
 	}
 }
-func work2Task3() {
+func module5Task3() {
 
 	fmt.Println("Задание 3. Проверить, что есть совпадающие числа")
 	var digit1, digit2, digit3 int
@@ -66,7 +66,7 @@ func work2Task3() {
 		fmt.Println("Совпадающих чисел нет")
 	}
 }
-func work2Task4() {
+func module5Task4() {
 	fmt.Println("Задание 4. Сумма без сдачи")
 
 	var sum, nom1, nom2, nom3 int
@@ -88,7 +88,7 @@ func work2Task4() {
 	fmt.Printf("Сумма %v %vможет быть оплачена без сдачи монетами следующих номиналов: %v, %v, %v\n", sum, canBeFlag, nom1, nom2, nom3)
 
 }
-func work2Task5() {
+func module5Task5() {
 	fmt.Println("Задание 5. Решение квадратного уравнения a*x^2 + b*x + c = 0")
 
 	var a, b, c, discriminant float64
@@ -113,7 +113,7 @@ func work2Task5() {
 	}
 }
 
-func work2Task6() {
+func module5Task6() {
 	fmt.Println("Задание 6. Счастливый билет")
 	var ticket int
 	fmt.Println("Введите номер билета:")
@@ -132,7 +132,7 @@ func work2Task6() {
 	}
 }
 
-func work2Task7() {
+func module5Task7() {
 	fmt.Println("Задание 7 (по желанию). Игра «Угадай число»")
 	var possibleAnswer, triesToGuess int
 	var userAnswer string
@@ -164,13 +164,13 @@ func work2Task7() {
 	}
 }
 
-func main() {
+func runAllTasksModule5() {
 	fmt.Println("Это задания 2 практической работы в курсе Skillbox.")
-	work2Task1()
-	work2Task2()
-	work2Task3()
-	work2Task4()
-	work2Task5()
-	work2Task6()
-	work2Task7()
+	wrapper(module5Task1)
+	wrapper(module5Task2)
+	wrapper(module5Task3)
+	wrapper(module5Task4)
+	wrapper(module5Task5)
+	wrapper(module5Task6)
+	wrapper(module5Task7)
 }
