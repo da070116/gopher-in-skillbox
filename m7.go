@@ -15,7 +15,7 @@ func CheckTicket(ticket int) bool {
 	return (d1 + d2 + d3) == (d4 + d5 + d6)
 }
 
-func module7Task1() {
+func m7Task1() {
 
 	fmt.Print("Задание 1. Зеркальные билеты")
 	var mirrorTickets uint = 0
@@ -38,7 +38,7 @@ func module7Task1() {
 	fmt.Println("Число зеркальных билетов:", mirrorTickets)
 	fmt.Println("===========================================================")
 }
-func module7Task2() {
+func m7Task2() {
 	fmt.Println("Задание 2. Шахматная доска")
 	const whiteCell string = " "
 	const blackCell string = "*"
@@ -71,7 +71,7 @@ func module7Task2() {
 	fmt.Println("")
 	fmt.Println("===========================================================")
 }
-func module7Task3() {
+func m7Task3() {
 
 	fmt.Println("Задание 3. Вывод ёлочки")
 	var canvasHeight int
@@ -99,7 +99,7 @@ func module7Task3() {
 	}
 	fmt.Println("===========================================================")
 }
-func module7Task4() {
+func m7Task4() {
 	fmt.Println("Задание 4 (по желанию). Счастливые билеты")
 
 	var maxTicketsToBuy, countTicketsToFindLucky, previousCountTicketsToFindLucky int
@@ -129,9 +129,9 @@ func module7Task4() {
 	fmt.Println("Наибольшее число билетов, чтобы выпал счастливый -", maxTicketsToBuy)
 }
 
-func runAllTasksModule7() {
-	module7Task1()
-	module7Task2()
-	module7Task3()
-	module7Task4()
+func m7RunAll() {
+	m7Task1()
+	m7Task2()
+	m7Task3()
+	m7Task4()
 }

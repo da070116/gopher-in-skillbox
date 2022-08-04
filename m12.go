@@ -39,7 +39,7 @@ func writeMessageToFile(file *os.File, stringCount int, datetime string, userInp
 	}
 }
 
-func module12Task1() {
+func m12Task1() {
 	fmt.Println("Задание 1. Работа с файлами")
 
 	// работа с файлом
@@ -72,7 +72,7 @@ func module12Task1() {
 
 }
 
-func module12Task2() {
+func m12Task2() {
 	fmt.Println("Задание 2. Интерфейс io.Reader")
 
 	// проверить наличие:
@@ -99,7 +99,7 @@ func module12Task2() {
 	fmt.Println(string(buf))
 }
 
-func module12Task3() {
+func m12Task3() {
 	fmt.Println("Задание 3. Уровни доступа")
 	// работа с файлом
 	file, err := os.Create("readonly.txt")
@@ -125,7 +125,7 @@ func module12Task3() {
 	fmt.Println(fileInfo.Mode())
 }
 
-func module12Task4() {
+func m12Task4() {
 	var b bytes.Buffer
 	filename := "records.txt"
 	var stringCount = 0
@@ -182,7 +182,7 @@ func generate(openBracketNum, closeBracketNum uint8, currentRecord string, resul
 	generate(openBracketNum-1, closeBracketNum, currentRecord+"(", result)
 }
 
-func module12Task5() {
+func m12Task5() {
 	/* Скопировано с решения в модуле 13	*/
 	result := make([]string, 0)
 
@@ -194,10 +194,10 @@ func module12Task5() {
 	fmt.Printf("Возможные варианты положения скобок: %v\n", result)
 }
 
-func runAllTasksModule12() {
-	wrapper(module12Task1)
-	wrapper(module12Task2)
-	wrapper(module12Task3)
-	wrapper(module12Task4)
-	wrapper(module12Task5)
+func m12RunAll() {
+	wrapper(m12Task1)
+	wrapper(m12Task2)
+	wrapper(m12Task3)
+	wrapper(m12Task4)
+	wrapper(m12Task5)
 }

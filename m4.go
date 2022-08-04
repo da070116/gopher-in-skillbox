@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func module4Task1() {
+func m4Task1() {
 	fmt.Println("Задача 1: баллы ЕГЭ.")
 	var firstExamScore, secondExamScore, thirdExamScore, totalScore int
 	const enterThresholdScore int = 275
@@ -29,7 +29,7 @@ func module4Task1() {
 		fmt.Println("Вы не поступили")
 	}
 }
-func module4Task2() {
+func m4Task2() {
 	fmt.Println("Задача 2: Три числа")
 	var firstDigit, secondDigit, thirdDigit int
 	const compareToDigit int = 5
@@ -45,7 +45,7 @@ func module4Task2() {
 		fmt.Printf("Среди введённых чисел нет числа больше %v.\n", compareToDigit)
 	}
 }
-func module4Task3() {
+func m4Task3() {
 	fmt.Println("Задача 3: Банкомат")
 	const minValue int = 100
 	const maxValue int = 100000
@@ -65,7 +65,7 @@ func module4Task3() {
 		fmt.Print(stateOK, "\nВы сняли ", requiredValue, " рублей.\n")
 	}
 }
-func module4Task4() {
+func m4Task4() {
 	fmt.Println("Задача 4: Три числа: ещё попытка")
 	var _firstDigit, _secondDigit, _thirdDigit, counter int
 	fmt.Println("Введите первое число:")
@@ -85,7 +85,7 @@ func module4Task4() {
 	}
 	fmt.Println("Среди введённых чисел", counter, "больше или равны 5.")
 }
-func module4Task5() {
+func m4Task5() {
 	var dayOfWeek, visitorsGroupSize, billSum, sumToPay int
 	fmt.Println("Введите день недели:")
 	_, _ = fmt.Scan(&dayOfWeek)
@@ -114,7 +114,7 @@ func module4Task5() {
 	}
 }
 
-func module4Task6() {
+func m4Task6() {
 	fmt.Println("Задача 5: Студенты")
 	var studentsAmount, groupsAmount, studentNumber int
 	fmt.Println("Введите количество студентов:")
@@ -136,12 +136,12 @@ func module4Task6() {
 	}
 }
 
-func runAllTasksModule4() {
+func m4RunAll() {
 	fmt.Println("Это задания 1 практической работы в курсе Skillbox.")
-	wrapper(module4Task1)
-	wrapper(module4Task2)
-	wrapper(module4Task3)
-	wrapper(module4Task4)
-	wrapper(module4Task5)
-	wrapper(module4Task6)
+	wrapper(m4Task1)
+	wrapper(m4Task2)
+	wrapper(m4Task3)
+	wrapper(m4Task4)
+	wrapper(m4Task5)
+	wrapper(m4Task6)
 }

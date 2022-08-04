@@ -67,7 +67,7 @@ func digitsOutput() {
 
 }
 
-func main() {
+func m11RunAll() {
 	countWords()
 	digitsOutput()
 }

@@ -9,5 +9,5 @@ func wrapper(f func()) {
 }
 
 func main() {
-	runAllTasksModule12()
+	m13RunAll()
 }

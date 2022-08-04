@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func module6Task1() {
+func m6Task1() {
 	fmt.Println("Задание 1. Написание простого цикла")
 	var customDigit int
 	fmt.Println("Введите произвольное целое число:")
@@ -24,7 +24,7 @@ func module6Task1() {
 	}
 }
 
-func module6Task2() {
+func m6Task2() {
 
 	fmt.Println("Задание 2. Сумма двух чисел по единице")
 	var sumDigit1, sumDigit2 int
@@ -46,7 +46,7 @@ func module6Task2() {
 	}
 	fmt.Println("Cумма чисел", sumDigit1, "и", sumDigit2, "равна", sum)
 }
-func module6Task3() {
+func m6Task3() {
 	fmt.Println("Задание 3. Расчёт суммы скидки")
 	var price, discountPercent float32
 	fmt.Println("Введите стоимость товара:")
@@ -70,7 +70,7 @@ func module6Task3() {
 	fmt.Print("Скидка (", int(discountPercent), "%): ", int(discountValue), " рублей\n")
 	fmt.Println("Сумма к оплате:", price-discountValue)
 }
-func module6Task4() {
+func m6Task4() {
 	fmt.Println("Задание 4. Предыдущее занятие на if")
 	var variableMaxAt10, variableMaxAt100, variableMaxAt1000 int
 	for i := 0; i <= 1000; i++ {
@@ -83,7 +83,7 @@ func module6Task4() {
 		variableMaxAt1000++
 	}
 }
-func module6Task5() {
+func m6Task5() {
 	fmt.Println("Задание 5 (по желанию). Задача на постепенное наполнение корзин разной ёмкости")
 	var firstBasketCapacity, secondBasketCapacity, thirdBasketCapacity uint
 	fmt.Println("Введите вместимость первой корзины:")
@@ -117,7 +117,7 @@ func module6Task5() {
 	fmt.Println("Корзины заполнены за", iterations, "шагов цикла")
 }
 
-func module6Task6() {
+func m6Task6() {
 	const topFloor int = 24
 	const baseFloor int = 1
 	const passengerInElevator int = -1
@@ -186,12 +186,12 @@ func module6Task6() {
 	fmt.Println("===================================")
 }
 
-func runAllTasksModule6() {
+func m6RunAll() {
 	fmt.Println("Это задания 3 практической работы в курсе Skillbox.")
-	module6Task1()
-	module6Task2()
-	module6Task3()
-	module6Task4()
-	module6Task5()
-	module6Task6()
+	m6Task1()
+	m6Task2()
+	m6Task3()
+	m6Task4()
+	m6Task5()
+	m6Task6()
 }

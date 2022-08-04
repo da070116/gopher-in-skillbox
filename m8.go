@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func module8Task1() {
+func m8Task1() {
 	fmt.Println("Задание 1. Времена года")
 	var month, season string
 	fmt.Println("Введите месяц")
@@ -30,7 +30,7 @@ func module8Task1() {
 	fmt.Println("========================================================================")
 }
 
-func module8Task2() {
+func m8Task2() {
 	fmt.Println("Задание 2. Дни недели")
 	var userInput string
 	fmt.Print("Введите будний день в сокращённой форме: ")
@@ -60,7 +60,7 @@ func module8Task2() {
 
 }
 
-func module8Task3() {
+func m8Task3() {
 	fmt.Println("Задание 3 (по желанию). Расчёт сдачи")
 	const queueSize int = 20
 	rand.Seed(time.Now().UnixNano())
@@ -111,9 +111,8 @@ func module8Task3() {
 	}
 }
 
-func runAllTasksModule8() {
-
-	module8Task1()
-	module8Task2()
-	module8Task3()
+func m8RunAll() {
+	m8Task1()
+	m8Task2()
+	m8Task3()
 }
