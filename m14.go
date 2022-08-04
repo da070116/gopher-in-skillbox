@@ -6,7 +6,7 @@ func m14Task1() {
 	fmt.Println("Задание 1. Функция, возвращающая результат")
 	fmt.Print("Введите максимальное значение для случайного числа: ")
 	var maxRand int
-	fmt.Scan(&maxRand)
+	_, _ = fmt.Scan(&maxRand)
 	rand := customRandInt(maxRand)
 	fmt.Printf("Сгенерировано число %v, результат isEven(%v) = %v\n", rand, rand, isEven(rand))
 
@@ -67,14 +67,24 @@ var task4GlobalVar2 = customRandInt(30)
 
 const task4GlobalVar3 = -42
 
+func sumGlobalVar1(v int) int {
+	return v + task4GlobalVar1
+}
+
+func sumGlobalVar2(v int) int {
+	return v + task4GlobalVar2
+}
+
+func sumGlobalVars(v int) int {
+	return v + task4GlobalVar2 + task4GlobalVar3 + task4GlobalVar1
+}
+
 func m14Task4() {
 	fmt.Println("Задание 4. Область видимости переменных")
 	digit := customRandInt(10)
-	fmt.Println("digit =", digit)
-	digit = namedSum(digit)
-	fmt.Println("digit =", digit)
-	digit = namedMult(digit)
-	fmt.Println("digit =", digit)
+	fmt.Println(digit, task4GlobalVar1, task4GlobalVar2, task4GlobalVar3)
+	digit = sumGlobalVar1(digit)
+	fmt.Println(sumGlobalVars(sumGlobalVar2(digit)))
 
 }
 
@@ -84,7 +94,8 @@ func isEven(val int) bool {
 
 func m14RunAll() {
 	fmt.Println("Задания для модуля 14")
-	//wrapper(m14Task1)
-	//wrapper(m14Task2)
+	wrapper(m14Task1)
+	wrapper(m14Task2)
 	wrapper(m14Task3)
+	wrapper(m14Task4)
 }
