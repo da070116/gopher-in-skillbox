@@ -171,9 +171,33 @@ func module12Task4() {
 	fmt.Println(string(resultBytes))
 }
 
+func generate(openBracketNum, closeBracketNum uint8, currentRecord string, result *[]string) {
+	if openBracketNum == 0 {
+		*result = append(*result, currentRecord+strings.Repeat(")", int(closeBracketNum)))
+		return
+	}
+	if closeBracketNum > openBracketNum {
+		generate(openBracketNum, closeBracketNum-1, currentRecord+")", result)
+	}
+	generate(openBracketNum-1, closeBracketNum, currentRecord+"(", result)
+}
+
+func module12Task5() {
+	/* Скопировано с решения в модуле 13	*/
+	result := make([]string, 0)
+
+	var bracketPairsNumber uint8
+	fmt.Print("Введите число пар скобок: ")
+	_, _ = fmt.Scan(&bracketPairsNumber)
+
+	generate(bracketPairsNumber, bracketPairsNumber, "", &result)
+	fmt.Printf("Возможные варианты положения скобок: %v\n", result)
+}
+
 func runAllTasksModule12() {
 	wrapper(module12Task1)
 	wrapper(module12Task2)
 	wrapper(module12Task3)
 	wrapper(module12Task4)
+	wrapper(module12Task5)
 }
