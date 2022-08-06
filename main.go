@@ -9,5 +9,5 @@ func wrapper(f func()) {
 }
 
 func main() {
-	m13RunAll()
+	m19RunAll()
 }
