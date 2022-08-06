@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-func w6Task1() {
+func m9Task1() {
 	/*
 		В цикле с использованием встроенных констант
 		(на предельные значения целых чисел, в пакете math) программа будет подсчитывать,
@@ -35,7 +35,7 @@ func w6Task1() {
 	}
 	fmt.Printf("На интервале от 0 до %v есть %v переполнений типа uint8 и %v переполнений типа uint16\n", math.MaxUint32, uint8OverflowCounts, uint16OverflowCounts)
 }
-func w6Task2() {
+func m9Task2() {
 	var digit1, digit2 int16
 	var resultType string
 	fmt.Print("Введите первое число:")
@@ -62,7 +62,7 @@ func w6Task2() {
 	fmt.Printf("Результат произведения %v и %v может быть записан как %v и равен %v\n", digit1, digit2, resultType, multiply)
 }
 
-func main() {
-	w6Task1()
-	w6Task2()
+func m9RunAll() {
+	wrapper(m9Task1)
+	wrapper(m9Task2)
 }
