@@ -62,30 +62,30 @@ func m14Task3() {
 
 }
 
-var task4GlobalVar1 = customRandInt(10)
-var task4GlobalVar2 = customRandInt(30)
+var var1 = customRandInt(10)
+var var2 = customRandInt(30)
 
-const task4GlobalVar3 = -42
+const var3 = -42
 
-func sumGlobalVar1(v int) int {
-	return v + task4GlobalVar1
+func sumNoFirst(v int) int {
+	return v + var2 + var3
 }
 
-func sumGlobalVar2(v int) int {
-	return v + task4GlobalVar2
+func sumNoSecond(v int) int {
+	return v + var3 + var1
 }
 
-func sumGlobalVars(v int) int {
-	return v + task4GlobalVar2 + task4GlobalVar3 + task4GlobalVar1
+func sumNoThird(v int) int {
+	return v + var2 + var1
 }
 
 func m14Task4() {
 	fmt.Println("Задание 4. Область видимости переменных")
 	digit := customRandInt(10)
-	fmt.Println(digit, task4GlobalVar1, task4GlobalVar2, task4GlobalVar3)
-	digit = sumGlobalVar1(digit)
-	fmt.Println(sumGlobalVars(sumGlobalVar2(digit)))
-
+	fmt.Println(digit, var1, var2, var3)
+	fmt.Println(sumNoFirst(digit))
+	fmt.Println(sumNoSecond(digit))
+	fmt.Println(sumNoThird(digit))
 }
 
 func isEven(val int) bool {
