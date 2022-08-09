@@ -18,5 +18,5 @@ func wrapper(f func()) {
 }
 
 func main() {
-	m15RunAll()
+
 }
