@@ -1,6 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func customRandInt(maxValue int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(maxValue)
+}
 
 func wrapper(f func()) {
 	fmt.Println("==========================================")
@@ -9,5 +18,5 @@ func wrapper(f func()) {
 }
 
 func main() {
-	m19RunAll()
+
 }
