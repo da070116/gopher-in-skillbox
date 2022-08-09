@@ -7,7 +7,6 @@ import (
 )
 
 func customRandInt(maxValue int) int {
-	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(maxValue)
 }
 
@@ -18,5 +17,6 @@ func wrapper(f func()) {
 }
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	m20RunAll()
 }
