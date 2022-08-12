@@ -6,45 +6,38 @@ import (
 	"time"
 )
 
-func m22Task1() {
-	var findMe int
-	arr := fillArray(100)
-	fmt.Println(arr)
-	fmt.Print("Введите число, которое нужно найти: ")
-	_, _ = fmt.Scan(&findMe)
-	position, flag := findInArray(findMe, arr)
-	if flag {
-		fmt.Printf("В массиве %v найдено %v чисел после заданного %v\n", arr, uint8(len(arr))-position-1, findMe)
-	} else {
-		fmt.Println("Число не найдено")
-	}
+func multiTypeSolve(x int16, y uint8, z float32) (result float32) {
+	x_ := float32(x)
+	y_ := float32(y)
+	result = 2*x_ + y_*y_ - float32(3)/z
 
-}
-
-func findInArray(needle int, haystack [10]int) (resultIndex uint8, isFound bool) {
-	for idx, val := range haystack {
-		if val == needle {
-			resultIndex = uint8(idx)
-			isFound = true
-			break
-		}
-	}
 	return
 }
 
-func fillArray(maxDigit int) (resultArray [10]int) {
+func m21Task1() {
+	var x int16 = -1<<15 + 1
+	var y uint8 = 254
+	var z float32 = 0.01
+	fmt.Println(multiTypeSolve(x, y, z))
+}
+
+func mathWithRandom(F func(int, int) int) {
+
+	a := rand.Intn(100)
+	b := rand.Intn(a)
+	fmt.Println("a =", a)
+	fmt.Println("b =", b)
+	defer fmt.Println("Func result =", F(a, b))
+}
+
+func m21Task2() {
 	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < len(resultArray); i++ {
-		resultArray[i] = customRandInt(maxDigit)
-	}
-	return
+	mathWithRandom(func(i1 int, i2 int) int { return i1 + i2 })
+	mathWithRandom(func(i1 int, i2 int) int { return i1 - i2 })
+	mathWithRandom(func(i1 int, i2 int) int { return i1 / i2 })
 }
 
-func m22Task2() {
-
-}
-
-func m22RunAll() {
-	wrapper(m22Task1)
-	wrapper(m22Task2)
+func m21RunAll() {
+	wrapper(m21Task1)
+	wrapper(m21Task2)
 }
