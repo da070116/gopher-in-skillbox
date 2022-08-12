@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"time"
 )
 
 func customRandInt(maxValue int) int {
@@ -17,6 +16,6 @@ func wrapper(f func()) {
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-	m20RunAll()
+
+	m21RunAll()
 }
