@@ -17,7 +17,7 @@ func multiTypeSolve(x int16, y uint8, z float32) (result float32) {
 func m21Task1() {
 	var x int16 = -1<<15 + 1
 	var y uint8 = 254
-	var z float32 = 0
+	var z float32 = 0.01
 	fmt.Println(multiTypeSolve(x, y, z))
 }
 

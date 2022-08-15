@@ -17,5 +17,5 @@ func wrapper(f func()) {
 
 func main() {
 
-	m21RunAll()
+	m22RunAll()
 }
