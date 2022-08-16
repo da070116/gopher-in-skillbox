@@ -35,15 +35,27 @@ func m23Task1() {
 	fmt.Printf("Массив\n%v\nсодержит нечётные элементы:\n%v\nи чётные элементы:\n%v\n", array, odds, evens)
 }
 
+func findChar(char rune, reversed string) (index int) {
+	index = -1 // значение по умолчанию 0 приводит к некорректному отображению, когда искомый символ первый в предложении
+	for i, r := range reversed {
+		if r == char {
+			index = len(reversed) - i - 1
+			break
+		}
+	}
+	return
+}
+
 func parseTest(sentences []string, chars []rune) (foundIndices [][]int) {
 	if len(sentences) == 0&len(chars) {
 		panic("Один из переданных массивов пуст")
 	}
-	for s, sentence := range sentences {
-		fmt.Println(s, ":", reverseString(sentence))
-		for l, letter := range sentence {
-			fmt.Printf("%v %v\n", l, letter)
+	for _, sentence := range sentences {
+		var indicesInSentence []int
+		for _, char := range chars {
+			indicesInSentence = append(indicesInSentence, findChar(char, reverseString(sentence)))
 		}
+		foundIndices = append(foundIndices, indicesInSentence)
 	}
 	return
 }
@@ -77,7 +89,6 @@ func m23Task2() {
 		var letter string
 		fmt.Print("Введите символ для массива букв или '_' для завершения ввода: ")
 		_, _ = fmt.Scan(&letter)
-		fmt.Println(letter)
 		if letter == "_" {
 			break
 		}
@@ -85,7 +96,7 @@ func m23Task2() {
 	}
 	fmt.Println(letters)
 
-	parseTest(sentences, letters)
+	fmt.Println(parseTest(sentences, letters))
 }
 
 func m23RunAll() {
