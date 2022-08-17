@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func getMessage() string {
+func readStringFromConsole() string {
 	consoleInputReader := bufio.NewReader(os.Stdin)
 	userInput, _ := consoleInputReader.ReadString('\n')
 	userInput = strings.Trim(userInput, " \n")
@@ -55,7 +55,7 @@ func m12Task1() {
 			fmt.Println("Введите произвольное сообщение или `exit` для завершения.")
 		}
 		// получаем сообщение от пользователя
-		userInput := getMessage()
+		userInput := readStringFromConsole()
 		if userInput == "exit" {
 			break
 		}
@@ -135,7 +135,7 @@ func m12Task4() {
 			fmt.Println("Введите произвольное сообщение или `exit` для завершения.")
 		}
 		// получаем сообщение от пользователя
-		userInput := getMessage()
+		userInput := readStringFromConsole()
 		if userInput == "exit" {
 			break
 		}
