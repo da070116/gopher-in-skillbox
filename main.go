@@ -1,93 +1,77 @@
 package main
 
 import (
-	"flag"
+	"bufio"
 	"fmt"
-	"io"
 	"os"
+	"strconv"
 	"strings"
 )
 
-func manage(attrs []string) (result string) {
-	// manage -- возвращает результат в зависимости от числа аргументов на входе
-	switch {
-	case len(attrs) == 1 || len(attrs) == 2:
-		result = readFileData(attrs...)
-	case len(attrs) == 3:
-		data := readFileData(attrs[:2]...)
-		writeToFile(attrs[2], data)
+type Student struct {
+	name  string
+	age   int
+	grade int
+}
 
-	default:
-		panic("Error: use 1, 2 or 3 args")
+// strToInt - преобразовать строку в число
+func strToInt(value string) (result int) {
+	value = strings.Trim(value, " ")
+	result, err := strconv.Atoi(value)
+	if err != nil {
+		fmt.Println("Ошибка:", err)
+		result = -1
 	}
 	return
 }
 
-func writeToFile(fileName string, data string) {
-	file, err := os.Create(fileName)
-	if err != nil {
-		panic(err)
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
+// newStudent - создание новой сущности типа Student из необработанной строки
+func newStudent(rawData string) (err any, st Student) {
+	items := strings.Split(rawData, " ")
 
-		}
-	}(file)
-	fmt.Printf("write %+v into %v\n", data, fileName)
-	_, err = file.WriteString(data)
-	if err != nil {
-		panic(err)
+	st.name = items[0]
+	st.age = strToInt(items[1])
+	st.grade = strToInt(items[2])
+	if st.age == -1 || st.grade == -1 {
+		err = -1
 	}
-
-}
-
-func readFromFile(fileName string) []byte {
-	// проверить наличие:
-	f, err := os.Open(fileName)
-	if err != nil {
-		fmt.Printf("Файл %v не найден\n", fileName)
-		return nil
-	}
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-			panic(err)
-		}
-	}(f)
-
-	// проверить размер:
-	fileInfo, err := f.Stat()
-	if err != nil || fileInfo.Size() == 0 {
-		fmt.Printf("Файл %v пуст\n", fileInfo.Name())
-		return nil
-	}
-	// считать в буфер по размеру файла:
-	buf := make([]byte, fileInfo.Size())
-	if _, err := io.ReadFull(f, buf); err != nil {
-		panic(err)
-	}
-	return buf
-}
-
-func readFileData(fileNames ...string) (result string) {
-	//readFileData -- прочитать данные из одного или нескольких файлов, результат объединить в строку
-	data := make([]string, len(fileNames))
-	for _, name := range fileNames {
-		fileContent := readFromFile(name)
-		if fileContent != nil {
-			data = append(data, string(fileContent))
-		}
-	}
-	result = strings.Join(data, "\n")
-	result = strings.Trim(result, "\n")
 	return
 }
 
+// studentInfo - вывод данных о структуре Student
+func (s Student) studentInfo() (info string) {
+	info = fmt.Sprintf("Student %v (age: %d) of grade %d\n", s.name, s.age, s.grade)
+	return
+}
+
+// main - выполнение основной логики программы
 func main() {
-	// получить параметры без имени из аргументов запуска
-	flag.Parse()
-	var rawParameters = flag.Args()
+	const EOT = 4
+	counter := 0
+	studentsStorage := make(map[int]Student)
 
-	fmt.Printf("%v\n", manage(rawParameters))
+	for {
+		inputSource := bufio.NewReader(os.Stdin)
+		fmt.Print("Введите данные о студенте в формате `имя` `возраст` `курс`: ")
+		rawInput, _ := inputSource.ReadString('\n')
+		rawInput = strings.Trim(rawInput, "\r\n")
+		if rune(rawInput[0]) == EOT {
+			fmt.Println("Пользователь запросил выход")
+			break
+		}
+
+		err, student := newStudent(rawInput)
+		if err != nil {
+			fmt.Println("Ошибка при вводе данных")
+		} else {
+			studentsStorage[counter] = student
+			fmt.Println("Запись внесена")
+		}
+		counter++
+	}
+	fmt.Println("Хранилище студентов содержит записи:")
+	for i := range studentsStorage {
+		fmt.Print(studentsStorage[i].studentInfo())
+	}
+
 }

@@ -33,5 +33,9 @@ func m25Task1() bool {
 			s = runeNeedle
 		}
 	}
+
+	//// а в нормальном случае строки 18-36 заменяются на
+	//symbolMatched = strings.Contains(haystack, needle)
+
 	return symbolMatched
 }
