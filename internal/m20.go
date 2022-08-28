@@ -1,6 +1,9 @@
-package main
+package internal
 
-import "fmt"
+import (
+	"fmt"
+	"gopher-in-skillbox/pkg"
+)
 
 const (
 	MATRIXSIZE3 = 3
@@ -23,7 +26,7 @@ func create3x5Matrix() (result [MATRIXSIZE3][MATRIXSIZE5]int) {
 		for j := 0; j < MATRIXSIZE5; j++ {
 			//fmt.Printf("Введите [%v]-й элемент [%v]-й строки матрицы:", j+1, i+1)
 			//_, _ = fmt.Scan(&result[i][j])
-			result[i][j] = customRandInt(100)
+			result[i][j] = pkg.CustomRandInt(100)
 		}
 	}
 	return
@@ -34,7 +37,7 @@ func create5x4Matrix() (result [MATRIXSIZE5][MATRIXSIZE4]int) {
 		for j := 0; j < MATRIXSIZE4; j++ {
 			//fmt.Printf("Введите [%v]-й элемент [%v]-й строки матрицы:", j+1, i+1)
 			//_, _ = fmt.Scan(&result[i][j])
-			result[i][j] = customRandInt(10)
+			result[i][j] = pkg.CustomRandInt(10)
 		}
 	}
 	return
@@ -74,6 +77,6 @@ func m20Task2() {
 
 //Execute all tasks in this module
 func m20RunAll() {
-	wrapper(m20Task1)
-	wrapper(m20Task2)
+	pkg.Wrapper(m20Task1)
+	pkg.Wrapper(m20Task2)
 }

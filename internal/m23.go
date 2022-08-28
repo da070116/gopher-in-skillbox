@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math/rand"
 	"time"
 	"unicode/utf8"
@@ -12,7 +13,7 @@ const fixedSize = uint8(55)
 func generateArray() (array [fixedSize]int) {
 	rand.Seed(time.Now().UnixNano())
 	for i := range array {
-		array[i] = customRandInt(int(fixedSize))
+		array[i] = pkg.CustomRandInt(int(fixedSize))
 	}
 
 	return
@@ -100,6 +101,6 @@ func m23Task2() {
 }
 
 func m23RunAll() {
-	wrapper(m23Task1)
-	wrapper(m23Task2)
+	pkg.Wrapper(m23Task1)
+	pkg.Wrapper(m23Task2)
 }

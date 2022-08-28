@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"gopher-in-skillbox/module_app/storage"
-	"gopher-in-skillbox/module_app/student"
+	"gopher-in-skillbox/internal/pkg/module_app/storage"
+	"gopher-in-skillbox/internal/pkg/module_app/student"
 	"os"
 	"strings"
 )
@@ -40,7 +40,7 @@ func main() {
 		if err != nil {
 			fmt.Print(fmt.Errorf("Ошибка при выводе: %v\n", err))
 		} else {
-			fmt.Println(st.StudentInfo())
+			fmt.Println(student.DisplayStudentInfo(st))
 		}
 	}
 

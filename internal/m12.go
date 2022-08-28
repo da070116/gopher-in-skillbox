@@ -1,9 +1,10 @@
-package main
+package internal
 
 import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"io"
 	"io/ioutil"
 	"os"
@@ -195,9 +196,9 @@ func m12Task5() {
 }
 
 func m12RunAll() {
-	wrapper(m12Task1)
-	wrapper(m12Task2)
-	wrapper(m12Task3)
-	wrapper(m12Task4)
-	wrapper(m12Task5)
+	pkg.Wrapper(m12Task1)
+	pkg.Wrapper(m12Task2)
+	pkg.Wrapper(m12Task3)
+	pkg.Wrapper(m12Task4)
+	pkg.Wrapper(m12Task5)
 }

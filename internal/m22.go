@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math/rand"
 	"sort"
 	"time"
@@ -30,7 +31,7 @@ func fillArray(maxDigit int) (resultArray [ARRAY1SIZE]int) {
 	// Generate random values from 0 to maxDigit for integer array of size 10.
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < len(resultArray); i++ {
-		resultArray[i] = customRandInt(maxDigit)
+		resultArray[i] = pkg.CustomRandInt(maxDigit)
 	}
 	return
 }
@@ -39,7 +40,7 @@ func fillSortedArray() (resultArray [ARRAY2SIZE]int) {
 	// Generate random values from 0 to 10 for integer array of size 12.
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < len(resultArray); i++ {
-		resultArray[i] = customRandInt(10)
+		resultArray[i] = pkg.CustomRandInt(10)
 	}
 	sort.Ints(resultArray[:])
 	return
@@ -98,6 +99,6 @@ func m22Task2() {
 }
 
 func m22RunAll() {
-	wrapper(m22Task1)
-	wrapper(m22Task2)
+	pkg.Wrapper(m22Task1)
+	pkg.Wrapper(m22Task2)
 }
