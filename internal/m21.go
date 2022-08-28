@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math/rand"
 	"time"
 )
@@ -38,6 +39,6 @@ func m21Task2() {
 }
 
 func m21RunAll() {
-	wrapper(m21Task1)
-	wrapper(m21Task2)
+	pkg.Wrapper(m21Task1)
+	pkg.Wrapper(m21Task2)
 }

@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math/rand"
 	"time"
 )
@@ -138,10 +139,10 @@ func m4Task6() {
 
 func m4RunAll() {
 	fmt.Println("Это задания 1 практической работы в курсе Skillbox.")
-	wrapper(m4Task1)
-	wrapper(m4Task2)
-	wrapper(m4Task3)
-	wrapper(m4Task4)
-	wrapper(m4Task5)
-	wrapper(m4Task6)
+	pkg.Wrapper(m4Task1)
+	pkg.Wrapper(m4Task2)
+	pkg.Wrapper(m4Task3)
+	pkg.Wrapper(m4Task4)
+	pkg.Wrapper(m4Task5)
+	pkg.Wrapper(m4Task6)
 }

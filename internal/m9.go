@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math"
 )
 
@@ -63,6 +64,6 @@ func m9Task2() {
 }
 
 func m9RunAll() {
-	wrapper(m9Task1)
-	wrapper(m9Task2)
+	pkg.Wrapper(m9Task1)
+	pkg.Wrapper(m9Task2)
 }

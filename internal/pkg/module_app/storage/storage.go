@@ -2,7 +2,7 @@ package storage
 
 import (
 	"fmt"
-	s "gopher-in-skillbox/module_app/student"
+	s "gopher-in-skillbox/internal/pkg/module_app/student"
 )
 
 type StudentsStorage map[int]*s.Person

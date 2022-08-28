@@ -1,7 +1,8 @@
-package main
+package internal
 
 import (
 	"fmt"
+	"gopher-in-skillbox/pkg"
 	"math/rand"
 	"time"
 )
@@ -12,7 +13,7 @@ func m24Task1() {
 
 	data := make([]int, arraySize)
 	for i := 0; i < arraySize; i++ {
-		data[i] = customRandInt(100)
+		data[i] = pkg.CustomRandInt(100)
 	}
 	fmt.Printf("Неотсортированный массив: %v\n", data)
 
@@ -42,7 +43,7 @@ func m24Task2() {
 	_, _ = fmt.Scan(&arraySize)
 	arrSlice := make([]int, arraySize)
 	for i := 0; i < arraySize; i++ {
-		arrSlice[i] = customRandInt(100)
+		arrSlice[i] = pkg.CustomRandInt(100)
 	}
 
 	// анонимная функция
@@ -65,6 +66,6 @@ func m24Task2() {
 }
 
 func m24RunAll() {
-	wrapper(m24Task1)
-	wrapper(m24Task2)
+	pkg.Wrapper(m24Task1)
+	pkg.Wrapper(m24Task2)
 }

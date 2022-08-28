@@ -1,4 +1,4 @@
-package main
+package internal
 
 func caesarEncode(rawString string, shift int) string {
 	// caesarEncode - Зашифровать строку, используя шифр Цезаря

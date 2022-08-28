@@ -1,6 +1,9 @@
-package main
+package internal
 
-import "fmt"
+import (
+	"fmt"
+	"gopher-in-skillbox/pkg"
+)
 
 func inputArray() (array [10]int) {
 	for i := 0; i < 10; i++ {
@@ -41,6 +44,6 @@ func m15Task2() {
 }
 
 func m15RunAll() {
-	wrapper(m15Task1)
-	wrapper(m15Task2)
+	pkg.Wrapper(m15Task1)
+	pkg.Wrapper(m15Task2)
 }
