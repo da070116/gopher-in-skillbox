@@ -1,47 +1,56 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"gopher-in-skillbox/internal/pkg/module_app/storage"
-	"gopher-in-skillbox/internal/pkg/module_app/student"
-	"os"
-	"strings"
+	"strconv"
 )
 
 // main - выполнение основной логики программы
 func main() {
-	const EOT = 4
-	counter := 0
-	studentsStorage := storage.NewStudentStorage()
-
 	for {
-		inputSource := bufio.NewReader(os.Stdin)
-		fmt.Print("Введите данные о студенте в формате `имя` `возраст` `курс`: ")
-		rawInput, _ := inputSource.ReadString('\n')
-		rawInput = strings.Trim(rawInput, "\r\n")
-		if rune(rawInput[0]) == EOT {
-			fmt.Println("Пользователь запросил выход")
+		chanStr := make(chan string)
+		go writer(chanStr)
+		val := <-chanStr
+		if val == "exit" {
 			break
-		}
-
-		err, st := student.NewStudent(rawInput)
-		if err != nil {
-			fmt.Println("Ошибка при вводе данных")
 		} else {
-			studentsStorage.Put(counter, &st)
-			fmt.Println("Запись внесена")
-		}
-		counter++
-	}
-	fmt.Println("Хранилище студентов содержит записи:")
-	for i := range studentsStorage {
-		st, err := studentsStorage.Get(i)
-		if err != nil {
-			fmt.Print(fmt.Errorf("Ошибка при выводе: %v\n", err))
-		} else {
-			fmt.Println(student.DisplayStudentInfo(st))
+			intVal, err := strconv.Atoi(val)
+			if err != nil {
+				fmt.Print(fmt.Errorf("Error: %v\n", err))
+				break
+			}
+			chanInt := make(chan int)
+			chanInt <- intVal
+			sc := power(chanInt)
+			tc := multiply(sc)
+			fmt.Println(<-tc)
 		}
 	}
+	fmt.Println("Terminated by user")
+}
 
+func writer(ch chan string) {
+	var userInput string
+	fmt.Print("Enter a digit: ")
+	_, _ = fmt.Scan(&userInput)
+	ch <- userInput
+	close(ch)
+}
+
+func power(firstChan chan int) chan int {
+	secondChan := make(chan int)
+	val := <-firstChan
+	go func() {
+		secondChan <- val * val
+	}()
+	return secondChan
+}
+
+func multiply(secondChan chan int) chan int {
+	thirdChan := make(chan int)
+	val := <-secondChan
+	go func() {
+		thirdChan <- val * 2
+	}()
+	return thirdChan
 }
