@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -8,25 +9,21 @@ import (
 // main - выполнение основной логики программы
 func main() {
 	for {
-		chanStr := make(chan string)
-		go writer(chanStr)
-		val := <-chanStr
-		if val == "exit" {
-			break
+		chanString := make(chan string)
+		go writer(chanString)
+		userInput := <-chanString
+		if userInput == "exit" {
+			return
 		} else {
-			intVal, err := strconv.Atoi(val)
+			digit, err := strconv.Atoi(userInput)
 			if err != nil {
-				fmt.Print(fmt.Errorf("Error: %v\n", err))
-				break
+				panic(errors.New("can't convert value"))
 			}
-			chanInt := make(chan int)
-			chanInt <- intVal
-			sc := power(chanInt)
-			tc := multiply(sc)
-			fmt.Println(<-tc)
+			firstIntegerChannel := power(digit)
+			secondIntegerChannel := multiply(firstIntegerChannel)
+			fmt.Println(<-secondIntegerChannel)
 		}
 	}
-	fmt.Println("Terminated by user")
 }
 
 func writer(ch chan string) {
@@ -37,19 +34,21 @@ func writer(ch chan string) {
 	close(ch)
 }
 
-func power(firstChan chan int) chan int {
-	secondChan := make(chan int)
-	val := <-firstChan
+func power(val int) chan int {
+	intChan := make(chan int)
 	go func() {
-		secondChan <- val * val
+		fmt.Printf("value %v powered by 2 is %v\n", val, val*val)
+		intChan <- val * val
+		close(intChan)
 	}()
-	return secondChan
+	return intChan
 }
 
-func multiply(secondChan chan int) chan int {
+func multiply(intChan chan int) chan int {
 	thirdChan := make(chan int)
-	val := <-secondChan
+	val := <-intChan
 	go func() {
+		fmt.Printf("value %v multiplied by 2 is %v\n", val, val*2)
 		thirdChan <- val * 2
 	}()
 	return thirdChan
