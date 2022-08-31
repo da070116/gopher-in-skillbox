@@ -1,65 +1,59 @@
 package goroutines
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
-	"os"
 	"strconv"
-	"strings"
 )
 
-func Conveyor() {
-
+// Task1Conveyor - выполнение основной логики программы
+func Task1Conveyor() {
 	for {
-		fc := input()
-		a := <-fc
-		if a == "exit" {
-			fmt.Println("Завершение программы по команде пользователя")
-			close(fc)
-			break
+		chanString := make(chan string)
+		go writer(chanString)
+		userInput := <-chanString
+		if userInput == "exit" {
+			return
+		} else {
+			digit, err := strconv.Atoi(userInput)
+			if err != nil {
+				panic(errors.New("не могу преобразовать значение в число"))
+			}
+			firstIntegerChannel := power(digit)
+			secondIntegerChannel := multiply(firstIntegerChannel)
+			fmt.Println(<-secondIntegerChannel)
 		}
-		digit, err := strconv.Atoi(a)
-		if err != nil {
-			fmt.Print(fmt.Errorf("Ошибка при обработке данных: %v\n", err))
-			break
-		}
-		intChannel := make(chan int)
-		intChannel <- digit
-
-		sc := square(intChannel)
-		tc := multiply(sc)
-		fmt.Println(<-tc)
 	}
-
 }
 
-func input() chan string {
-	c1 := make(chan string, 3)
-	go func() {
-		fmt.Print("input a value: ")
-		consoleInputReader := bufio.NewReader(os.Stdin)
-		result, _ := consoleInputReader.ReadString('\n')
-		result = strings.Trim(result, " \n")
-		c1 <- result
-	}()
-	return c1
+// writer - function to obtain user input
+func writer(ch chan string) {
+	var userInput string
+	fmt.Print("Введите целое число или 'exit' для выхода из программы: ")
+	_, _ = fmt.Scan(&userInput)
+	ch <- userInput
+	close(ch)
 }
 
-func square(ic chan int) chan int {
-	c2 := make(chan int)
+// power - return value powered by 2
+func power(val int) chan int {
+	intChan := make(chan int)
 	go func() {
-		value := <-ic
-		c2 <- value * value
+		fmt.Printf("Квадрат: %v\n", val*val)
+		intChan <- val * val
+		close(intChan)
 	}()
-	return c2
+	return intChan
 }
 
-func multiply(ic chan int) chan int {
-	c3 := make(chan int)
+// multiply - return value multiplied by 2
+func multiply(intChan chan int) chan int {
+	thirdChan := make(chan int)
+	val := <-intChan
 	go func() {
-		value := <-ic
-		fmt.Println(value)
-		c3 <- value * 2
+		fmt.Printf("Произведение на 2: %v\n", val*2)
+		thirdChan <- val * 2
+		close(thirdChan)
 	}()
-	return c3
+	return thirdChan
 }
