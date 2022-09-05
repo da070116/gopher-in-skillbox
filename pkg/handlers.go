@@ -100,7 +100,7 @@ func handleUserAddNew(writer http.ResponseWriter, request *http.Request, s *Serv
 		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	defer closeReader(request.Body)
+	defer CloseReader(request.Body)
 	s.Add(writer, content)
 }
 

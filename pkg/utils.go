@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-// closeReader - close reader after get request body
-func closeReader(Body io.ReadCloser) {
+// CloseReader - close reader after get request body
+func CloseReader(Body io.ReadCloser) {
 	err := Body.Close()
 	if err != nil {
 		log.Fatalln(err)
