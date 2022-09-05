@@ -16,6 +16,8 @@ import (
 // main - entry point
 func main() {
 
+	if _, err := os.Stat("")
+
 	// get args from console to define port and host
 	port := flag.Int("port", 8080, "port to launch server")
 	host := flag.String("host", "localhost", "host to launch server")
