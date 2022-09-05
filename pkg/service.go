@@ -4,11 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"strconv"
-	"strings"
 )
 
 type Service struct {
@@ -16,63 +12,44 @@ type Service struct {
 }
 
 // parseContentToAddFriend - add User by given raw data
-func (s *Service) parseContentToAddFriend(id int, raw string) (User, error) {
-	key, rawFriendId, _ := strings.Cut(raw, "=")
-	if key == "friend" {
-		friendId, err := strconv.Atoi(rawFriendId)
-		if err != nil {
-			log.Fatalln(err)
-			return User{}, err
-		}
-		if friendId > len(s.Storage) || id > len(s.Storage) {
-			err := errors.New("no such user")
-			return User{}, err
-		}
+func (s *Service) parseContentToAddFriend(userID int, friendID int) (User, error) {
 
-		u := s.Storage[id]
-
-		for _, friend := range u.Friends {
-			if friendId == friend {
-				err := errors.New("are friends already")
-				return User{}, err
-			}
-		}
-		u.Friends = append(u.Friends, friendId)
-		s.Storage[id] = u
-		return s.Storage[friendId], nil
-
-	} else {
-		err := errors.New("bad request")
-		log.Fatalln(err)
+	if friendID > len(s.Storage) || userID > len(s.Storage) {
+		err := errors.New("no such user")
 		return User{}, err
 	}
+
+	u := s.Storage[userID]
+
+	if friendID == userID {
+		err := errors.New("same ids")
+		return User{}, err
+	}
+
+	for _, friend := range u.Friends {
+		if friendID == friend {
+			err := errors.New("are friends already")
+			return User{}, err
+		}
+	}
+	u.Friends = append(u.Friends, friendID)
+	s.Storage[userID] = u
+	return s.Storage[friendID], nil
+
 }
 
 // parseContentToAddFriend - add User by given raw data
-func (s *Service) parseContentToEditAge(id int, raw string) error {
-	key, rawAge, _ := strings.Cut(raw, "=")
-	if key == "age" {
-		age, err := strconv.Atoi(rawAge)
-		if err != nil {
-			log.Fatalln(err)
-			return err
-		}
+func (s *Service) parseContentToEditAge(id int, ageVal int) error {
 
-		if age < 0 {
-			err := errors.New("wrong age was given")
-			return err
-		}
-
-		u := s.Storage[id]
-		u.Age = age
-		s.Storage[id] = u
-		return nil
-
-	} else {
-		err := errors.New("bad request")
-		log.Fatalln(err)
+	if ageVal < 0 {
+		err := errors.New("wrong age was given")
 		return err
 	}
+
+	u := s.Storage[id]
+	u.Age = ageVal
+	s.Storage[id] = u
+	return nil
 }
 
 // Add - add new User record handle
@@ -91,48 +68,15 @@ func (s *Service) Add(writer http.ResponseWriter, content []byte) {
 }
 
 // SetAge - set age for User record
-func (s *Service) SetAge(writer http.ResponseWriter, request *http.Request) {
-	if request.Method == "PATCH" {
-		query := request.URL.Query()
-		if query.Has("id") {
-			id, err := strconv.Atoi(query.Get("id"))
-			if err != nil {
-				writer.WriteHeader(http.StatusBadRequest)
-				_, _ = writer.Write([]byte(err.Error()))
-				return
-			}
-			content, err := ioutil.ReadAll(request.Body)
-			if err != nil {
-				writer.WriteHeader(http.StatusInternalServerError)
-				_, _ = writer.Write([]byte(err.Error()))
-				return
-			}
-			defer closeReader(request.Body)
+func (s *Service) SetAge(writer http.ResponseWriter, userID int, ageValue int) {
 
-			if id > len(s.Storage) {
-				err := errors.New("no such user")
-				writer.WriteHeader(http.StatusInternalServerError)
-				_, _ = writer.Write([]byte(err.Error()))
-				return
-			}
-
-			err = s.parseContentToEditAge(id, string(content))
-			if err != nil {
-				writer.WriteHeader(http.StatusInternalServerError)
-				_, _ = writer.Write([]byte(err.Error()))
-				return
-			}
-
-			writer.WriteHeader(http.StatusOK)
-			status := fmt.Sprintf("%s's age set to %d\n", s.Storage[id].Name, s.Storage[id].Age)
-			_, _ = writer.Write([]byte(status))
-
-		} else {
-			writer.WriteHeader(http.StatusBadRequest)
-			errorString := "no required query parameter found"
-			_, _ = writer.Write([]byte(errors.New(errorString).Error()))
-		}
+	err := s.parseContentToEditAge(userID, ageValue)
+	if err != nil {
+		writer.WriteHeader(http.StatusInternalServerError)
+		_, _ = writer.Write([]byte(err.Error()))
+		return
 	}
+
 }
 
 // GetList - get all User records handle
@@ -151,10 +95,10 @@ func (s *Service) GetList(writer http.ResponseWriter) {
 }
 
 // AddFriend - add friend to User
-func (s *Service) AddFriend(writer http.ResponseWriter, idToAddFriend int, content string) {
-	friend, err := s.parseContentToAddFriend(idToAddFriend, content)
+func (s *Service) AddFriend(writer http.ResponseWriter, idToAddFriend int, friendID int) {
+	friend, err := s.parseContentToAddFriend(idToAddFriend, friendID)
 	if err != nil {
-		CustomErrorDisplay(writer, http.StatusInternalServerError, err.Error())
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -167,8 +111,8 @@ func (s *Service) AddFriend(writer http.ResponseWriter, idToAddFriend int, conte
 // DeleteFromFriendList - remove id from User friends list
 func (s *Service) DeleteFromFriendList(idToDelete int) {
 	for idx, u := range s.Storage {
-		for i, friendId := range u.Friends {
-			if friendId == idToDelete {
+		for i, friendID := range u.Friends {
+			if friendID == idToDelete {
 				u.Friends = append(u.Friends[:i], u.Friends[i+1:]...)
 				s.Storage[idx] = u
 			}
@@ -177,30 +121,9 @@ func (s *Service) DeleteFromFriendList(idToDelete int) {
 }
 
 // Delete - remove User record handle
-func (s *Service) Delete(writer http.ResponseWriter, request *http.Request) {
-	if request.Method == "DELETE" {
-		query := request.URL.Query()
+func (s *Service) Delete(writer http.ResponseWriter, idToDelete int) {
 
-		if query.Has("id") {
-			idToDelete, err := strconv.Atoi(query.Get("id"))
-			if err != nil {
-				writer.WriteHeader(http.StatusInternalServerError)
-				_, _ = writer.Write([]byte(err.Error()))
-				return
-			}
-
-			s.DeleteFromFriendList(idToDelete)
-			delete(s.Storage, idToDelete)
-			writer.WriteHeader(http.StatusNoContent)
-			_, _ = writer.Write([]byte("record deleted"))
-		} else {
-			writer.WriteHeader(http.StatusBadRequest)
-			errorString := "no required query parameter found"
-			_, _ = writer.Write([]byte(errors.New(errorString).Error()))
-		}
-	} else {
-		writer.WriteHeader(http.StatusMethodNotAllowed)
-		errorString := fmt.Sprintf("method %s not allowed", request.Method)
-		_, _ = writer.Write([]byte(errors.New(errorString).Error()))
-	}
+	delete(s.Storage, idToDelete) // if no such id - just ignore
+	writer.WriteHeader(http.StatusNoContent)
+	_, _ = writer.Write([]byte("record deleted"))
 }

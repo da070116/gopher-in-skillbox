@@ -6,78 +6,147 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
-// HandleUserGetList - show all Users
-func HandleUserGetList(writer http.ResponseWriter, request *http.Request, s *Service) {
-	if request.Method == "GET" {
-		s.GetList(writer)
-	} else {
-		errorText := fmt.Sprintf("method %s is not allowed", request.Method)
-		CustomErrorDisplay(writer, http.StatusMethodNotAllowed, errorText)
-	}
-}
+//HandlersManager - base function for navigation.
+//It defines all available paths for REST API and checks
+//whether request.URL.Path matches one of them
+//
+//Available paths and methods are:
+//	   '/users/' - (GET) - display list of all users
+//	   '/users/' - (POST) - Add new User
+//	'/users/id/' - (PATCH) - edit User age or add friends to list (depends on parameter in request body)
+//	'/users/id/' - (DELETE) - remove User
+//
+func HandlersManager(writer http.ResponseWriter, request *http.Request, service *Service) {
 
-// HandleUserAddNew - add new User
-func HandleUserAddNew(writer http.ResponseWriter, request *http.Request, s *Service) {
-	if request.Method == "POST" {
+	if request.URL.Path == "/users/" {
 
-		if request.Header.Get("Content-Type") != "application/json" {
-			CustomErrorDisplay(writer, http.StatusBadRequest, "not a JSON")
+		switch request.Method {
+		case http.MethodGet:
+			handleUserGetList(writer, service)
+			break
+		case http.MethodPost:
+			handleUserAddNew(writer, request, service)
+			break
+		default:
+			s := fmt.Sprintf("method %s not supported", request.Method)
+			http.Error(writer, s, http.StatusNotImplemented)
 			return
 		}
 
-		content, err := ioutil.ReadAll(request.Body)
+	} else if strings.HasPrefix(request.URL.Path, "/users/") {
+
+		path := strings.Trim(request.URL.Path, "/") // clear path string from `/` at begin and end
+		pathParts := strings.Split(path, "/")
+
+		// if path didn't contain id
+		if len(pathParts) < 2 {
+			http.Error(writer, "expect <id> in this path", http.StatusBadRequest)
+			return
+		}
+
+		// obtain User id from path
+		id, err := strconv.Atoi(pathParts[1])
 		if err != nil {
-			CustomErrorDisplay(writer, http.StatusInternalServerError, err.Error())
+			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		defer closeReader(request.Body)
+		// and check if there is a User with this id
+		if id > len(service.Storage) {
+			http.Error(writer, "no such user", http.StatusBadRequest)
+			return
+		}
 
-		s.Add(writer, content)
+		switch request.Method {
 
-	} else {
-		errorText := fmt.Sprintf("method %s is not allowed", request.Method)
-		CustomErrorDisplay(writer, http.StatusMethodNotAllowed, errorText)
-	}
-}
+		case http.MethodDelete:
+			handleUserDelete(writer, service, id)
+			break
 
-// HandleUserAddNewFriend - add new friend in list for User by id
-func HandleUserAddNewFriend(writer http.ResponseWriter, request *http.Request, s *Service) {
-	if request.Method == "PATCH" {
-		query := request.URL.Query()
-		if query.Has("id") {
-			idToAddFriend, err := strconv.Atoi(query.Get("id"))
-			if err != nil {
-				CustomErrorDisplay(writer, http.StatusBadRequest, err.Error())
-				return
-			}
-			content, err := ioutil.ReadAll(request.Body)
-			if err != nil {
-				CustomErrorDisplay(writer, http.StatusInternalServerError, err.Error())
-				return
-			}
-			defer closeReader(request.Body)
+		case http.MethodPatch:
+			handleUserPatch(writer, request, service, id)
 
-			s.AddFriend(writer, idToAddFriend, string(content))
-
-		} else {
-			CustomErrorDisplay(writer, http.StatusBadRequest, "no required query parameter found")
+		default:
+			s := fmt.Sprintf("method %s not supported", request.Method)
+			http.Error(writer, s, http.StatusNotImplemented)
+			return
 		}
 
 	} else {
-		writer.WriteHeader(http.StatusMethodNotAllowed)
-		errorString := fmt.Sprintf("method %s not allowed", request.Method)
-		_, _ = writer.Write([]byte(errors.New(errorString).Error()))
+		errorText := fmt.Sprintf("Handler %s is not supported", request.URL.Path)
+		http.Error(writer, errorText, http.StatusNotImplemented)
+		return
 	}
 }
 
-// HandleUserSetAge - set age for User by id
-func HandleUserSetAge() {
-
+// handleUserGetList - show all Users
+func handleUserGetList(writer http.ResponseWriter, s *Service) {
+	s.GetList(writer)
 }
 
-// HandleUserDelete - delete User by id
-func HandleUserDelete() {
+// handleUserDelete - delete a User
+func handleUserDelete(writer http.ResponseWriter, s *Service, userID int) {
+	s.DeleteFromFriendList(userID)
+	s.Delete(writer, userID)
+}
 
+// handleUserAddNew - add new User
+func handleUserAddNew(writer http.ResponseWriter, request *http.Request, s *Service) {
+
+	content, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer closeReader(request.Body)
+	s.Add(writer, content)
+}
+
+// handleUserPatch - alter User data (age or friends list)
+func handleUserPatch(writer http.ResponseWriter, request *http.Request, s *Service, userID int) {
+	// validate request body
+	content, err := ioutil.ReadAll(request.Body)
+	if err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	key, rawValue, err := parseBody(string(content))
+	switch key {
+	case "friend":
+		value, err := strconv.Atoi(rawValue)
+		if err != nil {
+			s := fmt.Sprintf("value of %s parameter should be integer", key)
+			http.Error(writer, s, http.StatusBadRequest)
+			return
+		}
+
+		s.AddFriend(writer, userID, value)
+		break
+	case "age":
+		value, err := strconv.Atoi(rawValue)
+		if err != nil {
+			s := fmt.Sprintf("value of %s parameter should be integer", key)
+			http.Error(writer, s, http.StatusBadRequest)
+			return
+		}
+		s.SetAge(writer, userID, value)
+		break
+	default:
+		s := fmt.Sprintf("parameter %s not supported", key)
+		http.Error(writer, s, http.StatusBadRequest)
+		return
+	}
+}
+
+// parseBody - split request body with single parameter
+func parseBody(raw string) (key string, value string, err error) {
+	key, value, found := strings.Cut(raw, "=")
+	if found {
+		return key, value, nil
+	} else {
+		return "", "", errors.New("bad request")
+	}
 }
