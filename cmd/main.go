@@ -16,7 +16,20 @@ import (
 // main - entry point
 func main() {
 
-	if _, err := os.Stat("")
+	if _, err := os.Stat(pkg.DBFileName); err != nil {
+		if os.IsNotExist(err) {
+
+			f, err := os.Create(pkg.DBFileName)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			_ = f.Close()
+
+			pkg.ConfigureDatabase()
+		} else {
+			log.Fatalln(err)
+		}
+	}
 
 	// get args from console to define port and host
 	port := flag.Int("port", 8080, "port to launch server")

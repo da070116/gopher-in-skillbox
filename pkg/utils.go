@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"io"
 	"log"
-	"os"
+	_ "modernc.org/sqlite"
 )
+
+const DBFileName string = "database.sqlite3"
 
 // CloseReader - close reader after get request body
 func CloseReader(Body io.ReadCloser) {
@@ -24,13 +26,11 @@ func CloseDB(db *sql.DB) {
 }
 
 func ConfigureDatabase() {
-	f, err := os.Create("database.db")
+
+	db, err := sql.Open("sqlite", DBFileName)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	_ = f.Close()
-
-	db, _ := sql.Open("sqlite3", "database.db")
 	defer CloseDB(db)
 
 	createTable(db)
