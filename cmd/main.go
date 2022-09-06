@@ -56,9 +56,11 @@ func main() {
 func runServer(ctx context.Context, host string, port int) (err error) {
 
 	mux := http.NewServeMux()
-	service := pkg.Service{Storage: make(map[int]pkg.User)}
+	dbInstance := pkg.Database{Conn: pkg.DatabaseConnection()}
+	defer pkg.CloseDB(dbInstance.Conn)
+
 	mux.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
-		pkg.HandlersManager(w, r, &service)
+		pkg.HandlersManager(w, r, &dbInstance)
 	})
 
 	addr := fmt.Sprintf("%s:%d", host, port)

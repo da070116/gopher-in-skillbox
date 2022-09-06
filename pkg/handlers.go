@@ -19,16 +19,16 @@ import (
 //	'/users/id/' - (PATCH) - edit User age or add friends to list (depends on parameter in request body)
 //	'/users/id/' - (DELETE) - remove User
 //
-func HandlersManager(writer http.ResponseWriter, request *http.Request, service *Service) {
+func HandlersManager(writer http.ResponseWriter, request *http.Request, db *Database) {
 
 	if request.URL.Path == "/users/" {
 
 		switch request.Method {
 		case http.MethodGet:
-			handleUserGetList(writer, service)
+			handleUserGetList(writer, db)
 			break
 		case http.MethodPost:
-			handleUserAddNew(writer, request, service)
+			handleUserAddNew(writer, request, db)
 			break
 		default:
 			s := fmt.Sprintf("method %s not supported", request.Method)
@@ -53,20 +53,15 @@ func HandlersManager(writer http.ResponseWriter, request *http.Request, service 
 			http.Error(writer, err.Error(), http.StatusBadRequest)
 			return
 		}
-		// and check if there is a User with this id
-		if id > len(service.Storage) {
-			http.Error(writer, "no such user", http.StatusBadRequest)
-			return
-		}
 
 		switch request.Method {
 
 		case http.MethodDelete:
-			handleUserDelete(writer, service, id)
+			handleUserDelete(writer, db, id)
 			break
 
 		case http.MethodPatch:
-			handleUserPatch(writer, request, service, id)
+			handleUserPatch(writer, request, db, id)
 
 		default:
 			s := fmt.Sprintf("method %s not supported", request.Method)
@@ -82,18 +77,18 @@ func HandlersManager(writer http.ResponseWriter, request *http.Request, service 
 }
 
 // handleUserGetList - show all Users
-func handleUserGetList(writer http.ResponseWriter, s *Service) {
-	s.GetList(writer)
+func handleUserGetList(writer http.ResponseWriter, db *Database) {
+	db.GetList(writer)
 }
 
 // handleUserDelete - delete a User
-func handleUserDelete(writer http.ResponseWriter, s *Service, userID int) {
-	s.DeleteFromFriendList(userID)
-	s.Delete(writer, userID)
+func handleUserDelete(writer http.ResponseWriter, db *Database, userID int) {
+	db.DeleteFromFriendList(userID)
+	db.Delete(writer, userID)
 }
 
 // handleUserAddNew - add new User
-func handleUserAddNew(writer http.ResponseWriter, request *http.Request, s *Service) {
+func handleUserAddNew(writer http.ResponseWriter, request *http.Request, db *Database) {
 
 	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
@@ -101,11 +96,11 @@ func handleUserAddNew(writer http.ResponseWriter, request *http.Request, s *Serv
 		return
 	}
 	defer CloseReader(request.Body)
-	s.Add(writer, content)
+	db.Add(writer, content)
 }
 
 // handleUserPatch - alter User data (age or friends list)
-func handleUserPatch(writer http.ResponseWriter, request *http.Request, s *Service, userID int) {
+func handleUserPatch(writer http.ResponseWriter, request *http.Request, db *Database, userID int) {
 	// validate request body
 	content, err := ioutil.ReadAll(request.Body)
 	if err != nil {
@@ -123,7 +118,7 @@ func handleUserPatch(writer http.ResponseWriter, request *http.Request, s *Servi
 			return
 		}
 
-		s.AddFriend(writer, userID, value)
+		db.AddFriend(writer, userID, value)
 		break
 	case "age":
 		value, err := strconv.Atoi(rawValue)
@@ -132,7 +127,7 @@ func handleUserPatch(writer http.ResponseWriter, request *http.Request, s *Servi
 			http.Error(writer, s, http.StatusBadRequest)
 			return
 		}
-		s.SetAge(writer, userID, value)
+		db.SetAge(writer, userID, value)
 		break
 	default:
 		s := fmt.Sprintf("parameter %s not supported", key)
