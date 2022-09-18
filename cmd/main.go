@@ -3,94 +3,71 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
-	"log"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"net/http"
 	"os"
 	"os/signal"
+	gopherinskillbox "skillbox-test"
 	"skillbox-test/pkg"
+	"skillbox-test/pkg/handler"
+	"skillbox-test/pkg/repository"
+	"skillbox-test/pkg/service"
 	"syscall"
-	"time"
 )
 
 // main - entry point
 func main() {
 
-	if _, err := os.Stat(pkg.DBFileName); err != nil {
-		if os.IsNotExist(err) {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-			f, err := os.Create(pkg.DBFileName)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			_ = f.Close()
-
-			pkg.ConfigureDatabase()
-		} else {
-			log.Fatalln(err)
-		}
+	if err := initConfig(); err != nil {
+		logrus.Fatalf("Error in config load: %s", err.Error())
 	}
 
 	// get args from console to define port and host
-	port := flag.Int("port", 8080, "port to launch server")
+	port := flag.Int("port", viper.GetInt("port"), "port to launch server")
 	host := flag.String("host", "localhost", "host to launch server")
 	flag.Parse()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
-	ctx, cancel := context.WithCancel(context.Background())
-
-	go func() {
-		osCall := <-c
-		log.Printf("System call %+v\n", osCall)
-		cancel()
-	}()
-
-	if err := runServer(ctx, *host, *port); err != nil {
-		log.Printf("failed to launch server :%+v\n", err)
-	}
-}
-
-// runServer - configure and run server with graceful shutdown
-func runServer(ctx context.Context, host string, port int) (err error) {
-
-	mux := http.NewServeMux()
-	dbInstance := pkg.Database{Conn: pkg.DatabaseConnection()}
-	defer pkg.CloseDB(dbInstance.Conn)
-
-	mux.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
-		pkg.HandlersManager(w, r, &dbInstance)
+	db, err := repository.NewSqliteDB(repository.Config{
+		Name: viper.GetString("db_name"),
 	})
 
-	addr := fmt.Sprintf("%s:%d", host, port)
+	if err != nil {
+		logrus.Fatalf("Failed to init database: %s", err.Error())
+	}
+	defer pkg.CloseDB(db)
 
-	srv := &http.Server{Addr: addr, Handler: mux}
+	server := new(gopherinskillbox.Server)
+	repos := repository.NewRepository(db)
+	services := service.NewService(repos)
+	handlers := handler.NewHandler(services)
 
 	go func() {
-		if err = srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen:%s\n", err)
+		err = server.Run(handlers.InitRoutes(), *host, *port)
+		if err != nil && err != http.ErrServerClosed {
+			logrus.Fatalf("Error on server start:%s", err.Error())
+			return
 		}
 	}()
 
-	log.Println("Launch server on " + addr)
+	logrus.Printf("Server on %s and port %d started", *host, *port)
 
-	<-ctx.Done()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 
-	log.Printf("Server on %s stopped", addr)
+	<-quit
 
-	ctxShutdown, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err = srv.Shutdown(ctxShutdown); err != nil {
-		log.Fatalf("shutdown failed due to %s\n", err)
+	err = server.Shutdown(context.Background())
+	if err != nil {
+		logrus.Fatalf("Error during shutdown: %s", err.Error())
 	}
+}
 
-	log.Printf("server %s exited correctly\n", addr)
-
-	if err == http.ErrServerClosed {
-		err = nil
-	}
-
-	return
+// initConfig - use configuration files
+func initConfig() error {
+	viper.AddConfigPath("../configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }
