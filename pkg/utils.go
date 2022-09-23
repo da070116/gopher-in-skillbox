@@ -1,14 +1,12 @@
 package pkg
 
 import (
-	"database/sql"
-	"github.com/jmoiron/sqlx"
-	"github.com/sirupsen/logrus"
+	"encoding/json"
 	"io"
-	_ "modernc.org/sqlite"
-)
+	"os"
 
-const DBFileName string = "database.sqlite3"
+	"github.com/sirupsen/logrus"
+)
 
 // CloseReader - close reader after get request body
 func CloseReader(Body io.ReadCloser) {
@@ -18,19 +16,17 @@ func CloseReader(Body io.ReadCloser) {
 	}
 }
 
-// CloseDB - close database
-func CloseDB(db *sqlx.DB) {
-	err := db.Close()
+func CloseFile(f *os.File) {
+	err := f.Close()
 	if err != nil {
 		logrus.Fatalln(err)
 	}
-	logrus.Printf("connection to DB  %s closed\n", DBFileName)
 }
 
-// CloseQuery - close database
-func CloseQuery(rows *sql.Rows) {
-	err := rows.Close()
+func JSONFormatString(uid int, c City) (string, error) {
+	data, err := json.Marshal(c)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
+	return string(data), nil
 }
