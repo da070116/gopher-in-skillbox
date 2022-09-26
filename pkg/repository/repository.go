@@ -1,25 +1,23 @@
 package repository
 
 import (
-	"github.com/jmoiron/sqlx"
-	gopherinskillbox "skillbox-test"
+	"skillbox-test/pkg"
 )
 
-type User interface {
-	CreateUser(user gopherinskillbox.User) (gopherinskillbox.User, error)
-	GetAllUsers() ([]gopherinskillbox.User, error)
-	DeleteUser(deleteId int) error
-	UpdateUser(updateId int, data gopherinskillbox.UpdateUserData) error
-	AddFriend(id int, data gopherinskillbox.UserFriendData) error
+type City interface {
+	CreateCity(cityData string) (pkg.City, error)
+	GetAllCities() ([]pkg.City, error)
+	DeleteCity(deleteId int) error
+	UpdateCityPopulation(updateId int, data pkg.CityPopulation) error
 }
 
 type Repository struct {
-	User
+	City
 }
 
 // NewRepository - constructor for database maintainer
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(storage *pkg.StorageCache) *Repository {
 	return &Repository{
-		User: NewUserSqlite(db),
+		City: NewCityCache(storage),
 	}
 }

@@ -1,25 +1,24 @@
 package service
 
 import (
-	gopherinskillbox "skillbox-test"
+	"skillbox-test/pkg"
 	"skillbox-test/pkg/repository"
 )
 
-type User interface {
-	CreateUser(user gopherinskillbox.User) (gopherinskillbox.User, error)
-	GetAllUsers() ([]gopherinskillbox.User, error)
-	DeleteUser(deleteId int) error
-	UpdateUser(updateId int, data gopherinskillbox.UpdateUserData) error
-	AddFriend(id int, data gopherinskillbox.UserFriendData) error
+type City interface {
+	CreateCity(cityData string) (pkg.City, error)
+	GetAllCities() ([]pkg.City, error)
+	DeleteCity(deleteId int) error
+	UpdateCity(updateId int, data pkg.CityPopulation) error
 }
 
 type Service struct {
-	User
+	City
 }
 
 // NewService constructor
 func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		User: NewUserService(repo),
+		City: NewCityService(repo),
 	}
 }

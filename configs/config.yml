@@ -1,2 +1,2 @@
 port: 8080
-db_name: "database.sqlite3"
+db_name: "cities.csv"

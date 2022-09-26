@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
@@ -21,7 +22,6 @@ func NewStorageCache() *StorageCache {
 	storageCache := StorageCache{
 		cities: cities,
 	}
-
 	return &storageCache
 }
 
@@ -35,56 +35,57 @@ func (sc *StorageCache) LoadFromFile(filename string) error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		sc.SetCity(scanner.Text())
+		_, err := sc.SetCity(scanner.Text())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (sc *StorageCache) LoadIntoFile(filename string) error {
+func (sc *StorageCache) LoadIntoFile(filename string) {
 
 	file, err := os.Create(filename)
 	if err != nil {
-		return err
+		logrus.Fatalln(err)
 	}
 	defer CloseFile(file)
 
 	for id, city := range sc.cities {
-		cityString := fmt.Sprintf("%d,%s\n", id, sc.PutCity(city))
-		file.WriteString(cityString)
+		cityString := fmt.Sprintf("%d,%s\n", id, CityToString(city))
+		_, err := file.WriteString(cityString)
+		if err != nil {
+			logrus.Fatalln(err)
+		}
 	}
-
-	return nil
 }
 
-func (sc *StorageCache) PutCity(city City) string {
-	stringvals := []string{city.Name, city.Region, city.District, strconv.Itoa(city.Population), strconv.Itoa(city.Foundation)}
-	return strings.Join(stringvals, ",")
-}
-
-func (sc *StorageCache) SetCity(rawData string) error {
+func (sc *StorageCache) SetCity(rawData string) (City, error) {
 	data := strings.Trim(rawData, " ")
 	params := strings.Split(data, ",")
 
 	uid, err := strconv.Atoi(params[0])
 	if err != nil {
-		return err
+		return City{}, err
 	}
 	name := params[1]
 	region := params[2]
 	district := params[3]
 	population, err := strconv.Atoi(params[4])
 	if err != nil {
-		return err
+		return City{}, err
 	}
 	foundation, err := strconv.Atoi(params[5])
 	if err != nil {
-		return err
+		return City{}, err
 	}
 
 	sc.Lock()
 	defer sc.Unlock()
-	sc.cities[uid] = City{
+
+	newCity := City{
+		Id:         uid,
 		Name:       name,
 		Region:     region,
 		District:   district,
@@ -92,7 +93,9 @@ func (sc *StorageCache) SetCity(rawData string) error {
 		Foundation: foundation,
 	}
 
-	return nil
+	sc.cities[uid] = newCity
+
+	return newCity, nil
 }
 
 func (sc *StorageCache) GetCity(uid int) (City, error) {
@@ -164,6 +167,15 @@ func (sc *StorageCache) FilterCitiesByFoundationRange(min int, max int) []City {
 		if city.Foundation >= min && city.Foundation <= max {
 			result = append(result, city)
 		}
+	}
+	return result
+}
+
+func (sc *StorageCache) GetAllCities() []City {
+	result := make([]City, 0)
+	for _, city := range sc.cities {
+
+		result = append(result, city)
 	}
 	return result
 }

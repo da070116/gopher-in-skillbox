@@ -18,13 +18,13 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
-	users := router.Group("/user")
+	users := router.Group("/city")
 	{
-		users.GET("/list", h.getUsers)
-		users.POST("/add", h.addUser)
-		users.DELETE("/:id", h.deleteUser)
-		users.PATCH("/:id", h.patchUser)
-		users.PATCH(":id/befriend", h.addFriend)
+		users.GET("/list", h.getCities)
+		users.POST("/add", h.addCity)
+		users.DELETE("/:id", h.deleteCity)
+		users.PATCH("/:id", h.patchCity)
+
 	}
 	return router
 }

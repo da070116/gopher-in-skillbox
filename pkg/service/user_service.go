@@ -1,34 +1,30 @@
 package service
 
 import (
-	gopherinskillbox "skillbox-test"
+	"skillbox-test/pkg"
 	"skillbox-test/pkg/repository"
 )
 
-type UserService struct {
-	repo repository.User
+type CityService struct {
+	repo repository.City
 }
 
-func (s *UserService) DeleteUser(deleteId int) error {
-	return s.repo.DeleteUser(deleteId)
+func (s *CityService) DeleteCity(deleteId int) error {
+	return s.repo.DeleteCity(deleteId)
 }
 
-func NewUserService(repo repository.User) *UserService {
-	return &UserService{repo: repo}
+func NewCityService(repo repository.City) *CityService {
+	return &CityService{repo: repo}
 }
 
-func (s *UserService) CreateUser(user gopherinskillbox.User) (gopherinskillbox.User, error) {
-	return s.repo.CreateUser(user)
+func (s *CityService) CreateCity(cityData string) (pkg.City, error) {
+	return s.repo.CreateCity(cityData)
 }
 
-func (s *UserService) GetAllUsers() ([]gopherinskillbox.User, error) {
-	return s.repo.GetAllUsers()
+func (s *CityService) GetAllCities() ([]pkg.City, error) {
+	return s.repo.GetAllCities()
 }
 
-func (s *UserService) UpdateUser(userId int, userData gopherinskillbox.UpdateUserData) error {
-	return s.repo.UpdateUser(userId, userData)
-}
-
-func (s *UserService) AddFriend(id int, data gopherinskillbox.UserFriendData) error {
-	return s.repo.AddFriend(id, data)
+func (s *CityService) UpdateCity(cityId int, population pkg.CityPopulation) error {
+	return s.repo.UpdateCityPopulation(cityId, population)
 }

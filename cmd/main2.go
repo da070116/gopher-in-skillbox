@@ -18,7 +18,7 @@ import (
 )
 
 // main - entry point
-func main2() {
+func main() {
 
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
@@ -31,14 +31,13 @@ func main2() {
 	host := flag.String("host", "localhost", "host to launch server")
 	flag.Parse()
 
-	db, err := repository.NewSqliteDB(repository.Config{
-		Name: viper.GetString("db_name"),
-	})
+	db := pkg.NewStorageCache()
 
+	err := db.LoadFromFile(viper.GetString("db_name"))
 	if err != nil {
 		logrus.Fatalf("Failed to init database: %s", err.Error())
 	}
-	defer pkg.CloseDB(db)
+	defer db.LoadIntoFile(viper.GetString("db_name"))
 
 	server := new(gopherinskillbox.Server)
 	repos := repository.NewRepository(db)
