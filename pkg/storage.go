@@ -53,7 +53,7 @@ func (sc *StorageCache) LoadIntoFile(filename string) {
 	defer CloseFile(file)
 
 	for id, city := range sc.cities {
-		cityString := fmt.Sprintf("%d,%s\n", id, CityToString(city))
+		cityString := fmt.Sprintf("%d,%s\n", id, CityWithIdToString(city))
 		_, err := file.WriteString(cityString)
 		if err != nil {
 			logrus.Fatalln(err)
