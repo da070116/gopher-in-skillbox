@@ -8,6 +8,10 @@ import (
 type City interface {
 	CreateCity(cityData string) (pkg.City, error)
 	GetAllCities() ([]pkg.City, error)
+	FilterCitiesByRegion(region string) ([]pkg.City, error)
+	FilterCitiesByDistrict(district string) ([]pkg.City, error)
+	FilterCitiesByPopulation(min int, max int) ([]pkg.City, error)
+	FilterCitiesByFoundation(min int, max int) ([]pkg.City, error)
 	DeleteCity(deleteId int) error
 	UpdateCity(updateId int, data pkg.CityPopulation) error
 }

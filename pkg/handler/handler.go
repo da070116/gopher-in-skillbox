@@ -21,6 +21,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	users := router.Group("/city")
 	{
 		users.GET("/list", h.getCities)
+		users.GET("/filter/:param", h.filterCities)
 		users.POST("/add", h.addCity)
 		users.DELETE("/:id", h.deleteCity)
 		users.PATCH("/:id", h.patchCity)

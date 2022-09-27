@@ -9,6 +9,22 @@ type CityService struct {
 	repo repository.City
 }
 
+func (s *CityService) FilterCitiesByDistrict(district string) ([]pkg.City, error) {
+	return s.repo.FilterCitiesByDistrict(district)
+}
+
+func (s *CityService) FilterCitiesByPopulation(min int, max int) ([]pkg.City, error) {
+	return s.repo.FilterCitiesByPopulation(min, max)
+}
+
+func (s *CityService) FilterCitiesByFoundation(min int, max int) ([]pkg.City, error) {
+	return s.repo.FilterCitiesByFoundation(min, max)
+}
+
+func (s *CityService) FilterCitiesByRegion(region string) ([]pkg.City, error) {
+	return s.repo.FilterCitiesByRegion(region)
+}
+
 func (s *CityService) DeleteCity(deleteId int) error {
 	return s.repo.DeleteCity(deleteId)
 }

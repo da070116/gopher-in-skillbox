@@ -9,6 +9,10 @@ type City interface {
 	GetAllCities() ([]pkg.City, error)
 	DeleteCity(deleteId int) error
 	UpdateCityPopulation(updateId int, data pkg.CityPopulation) error
+	FilterCitiesByRegion(region string) ([]pkg.City, error)
+	FilterCitiesByDistrict(district string) ([]pkg.City, error)
+	FilterCitiesByPopulation(min int, max int) ([]pkg.City, error)
+	FilterCitiesByFoundation(min int, max int) ([]pkg.City, error)
 }
 
 type Repository struct {

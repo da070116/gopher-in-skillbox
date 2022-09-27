@@ -52,8 +52,8 @@ func (sc *StorageCache) LoadIntoFile(filename string) {
 	}
 	defer CloseFile(file)
 
-	for id, city := range sc.cities {
-		cityString := fmt.Sprintf("%d,%s\n", id, CityWithIdToString(city))
+	for _, city := range sc.cities {
+		cityString := fmt.Sprintf("%s\n", CityWithIdToString(city))
 		_, err := file.WriteString(cityString)
 		if err != nil {
 			logrus.Fatalln(err)
@@ -80,10 +80,8 @@ func (sc *StorageCache) SetCity(rawData string) (City, error) {
 	if err != nil {
 		return City{}, err
 	}
-
 	sc.Lock()
 	defer sc.Unlock()
-
 	newCity := City{
 		Id:         uid,
 		Name:       name,
@@ -92,16 +90,13 @@ func (sc *StorageCache) SetCity(rawData string) (City, error) {
 		Population: population,
 		Foundation: foundation,
 	}
-
 	sc.cities[uid] = newCity
-
 	return newCity, nil
 }
 
 func (sc *StorageCache) GetCity(uid int) (City, error) {
 	sc.RLock()
 	defer sc.RUnlock()
-
 	city, ok := sc.cities[uid]
 	if !ok {
 		return City{}, errors.New("no such data")
@@ -112,7 +107,6 @@ func (sc *StorageCache) GetCity(uid int) (City, error) {
 func (sc *StorageCache) DeleteCity(uid int) error {
 	sc.Lock()
 	defer sc.Unlock()
-
 	if _, found := sc.cities[uid]; !found {
 		return errors.New("no such data")
 	}
@@ -126,7 +120,6 @@ func (sc *StorageCache) UpdateCityPopulation(uid int, population int) error {
 		return err
 	}
 	city.Population = population
-
 	sc.cities[uid] = city
 	return nil
 }
@@ -154,6 +147,7 @@ func (sc *StorageCache) FilterCitiesByDistrict(district string) []City {
 func (sc *StorageCache) FilterCitiesByPopulationRange(min int, max int) []City {
 	result := make([]City, 0)
 	for _, city := range sc.cities {
+		println(min, city.Population, max)
 		if city.Population >= min && city.Population <= max {
 			result = append(result, city)
 		}
@@ -174,7 +168,6 @@ func (sc *StorageCache) FilterCitiesByFoundationRange(min int, max int) []City {
 func (sc *StorageCache) GetAllCities() []City {
 	result := make([]City, 0)
 	for _, city := range sc.cities {
-
 		result = append(result, city)
 	}
 	return result

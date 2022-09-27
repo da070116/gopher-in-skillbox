@@ -1,13 +1,14 @@
 package handler
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"skillbox-test/pkg"
 	"strconv"
 )
 
-// addUser endpoint handler
+// addCity endpoint handler
 func (h *Handler) addCity(ctx *gin.Context) {
 	var input pkg.City
 	if err := ctx.BindJSON(&input); err != nil {
@@ -22,7 +23,7 @@ func (h *Handler) addCity(ctx *gin.Context) {
 	})
 }
 
-// getUsers endpoint handler
+// getCities endpoint handler
 func (h *Handler) getCities(ctx *gin.Context) {
 	allCities, err := h.services.GetAllCities()
 	displayError(ctx, err)
@@ -34,7 +35,118 @@ func (h *Handler) getCities(ctx *gin.Context) {
 	}
 }
 
-// patchUser endpoint handler
+// getCities endpoint handler
+func (h *Handler) filterCities(ctx *gin.Context) {
+
+	parameter := ctx.Param("param")
+	switch parameter {
+	case "region":
+		value, ok := ctx.GetQuery("value")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		filteredCities, err := h.services.FilterCitiesByRegion(value)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		if filteredCities != nil {
+			ctx.JSON(http.StatusOK, filteredCities)
+
+		} else {
+			ctx.JSON(http.StatusOK, map[string]interface{}{"result": "no related cities yet"})
+		}
+	case "district":
+		value, ok := ctx.GetQuery("value")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		filteredCities, err := h.services.FilterCitiesByDistrict(value)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		if filteredCities != nil {
+			ctx.JSON(http.StatusOK, filteredCities)
+
+		} else {
+			ctx.JSON(http.StatusOK, map[string]interface{}{"result": "no related cities yet"})
+		}
+	case "population":
+		min, ok := ctx.GetQuery("min")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		minVal, err := strconv.Atoi(min)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		max, ok := ctx.GetQuery("max")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		maxVal, err := strconv.Atoi(max)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		filteredCities, err := h.services.FilterCitiesByPopulation(minVal, maxVal)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		if filteredCities != nil {
+			ctx.JSON(http.StatusOK, filteredCities)
+
+		} else {
+			ctx.JSON(http.StatusOK, map[string]interface{}{"result": "no related cities yet"})
+		}
+
+	case "foundation":
+		min, ok := ctx.GetQuery("min")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		minVal, err := strconv.Atoi(min)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		max, ok := ctx.GetQuery("max")
+		if !ok {
+			displayError(ctx, errors.New("no value provided"))
+			return
+		}
+		maxVal, err := strconv.Atoi(max)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		filteredCities, err := h.services.FilterCitiesByFoundation(minVal, maxVal)
+		if err != nil {
+			displayError(ctx, err)
+			return
+		}
+		if filteredCities != nil {
+			ctx.JSON(http.StatusOK, filteredCities)
+
+		} else {
+			ctx.JSON(http.StatusOK, map[string]interface{}{"result": "no related cities yet"})
+		}
+
+	default:
+		ctx.JSON(http.StatusBadRequest, map[string]interface{}{"result": "Bad request"})
+
+	}
+}
+
+// patchCity endpoint handler
 func (h *Handler) patchCity(ctx *gin.Context) {
 	var editId int
 
@@ -42,6 +154,7 @@ func (h *Handler) patchCity(ctx *gin.Context) {
 	displayError(ctx, err)
 
 	var newData pkg.CityPopulation
+	err = ctx.BindJSON(&newData)
 	displayError(ctx, err)
 
 	err = h.services.UpdateCity(editId, newData)
